@@ -207,7 +207,7 @@ export default function Chat() {
                 )}
             </Box>
 
-            {/*  INPUT  */}
+            {/* INPUT */}
             <Box
                 sx={{
                     px: 4,
@@ -216,12 +216,16 @@ export default function Chat() {
                     borderTop: "1px solid #ddd"
                 }}
             >
-                <Box
-                    sx={{
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleAsk(input);
+                    }}
+                    style={{
                         maxWidth: 900,
-                        mx: "auto",
+                        margin: "0 auto",
                         display: "flex",
-                        gap: 2
+                        gap: "16px"
                     }}
                 >
                     <input
@@ -237,33 +241,18 @@ export default function Chat() {
                         }}
                     />
 
-
-                    <Button
-                        onClick={() => handleAsk(input)}
-                        sx={{
-                            background: "#d6cbff",
-                            color: "#000",
-                            fontWeight: 600,
-                            "&:hover": { background: "#c8bbff" }
-                        }}
-
-                    >
+                    {/* ASK */}
+                    <button type="submit">
                         Ask
-                    </Button>
+                    </button>
 
-                    <Button
-                        onClick={handleSaveChat}
-                        sx={{
-                            background: "#e8e2ff",
-                            color: "#000",
-                            fontWeight: 600,
-                            "&:hover": { background: "#dccfff" }
-                        }}
-                    >
+                    {/* SAVE */}
+                    <button type="button" onClick={handleSaveChat}>
                         Save
-                    </Button>
-                </Box>
+                    </button>
+                </form>
             </Box>
+
 
             {/*  FEEDBACK MODAL  */}
             <FeedbackModal
