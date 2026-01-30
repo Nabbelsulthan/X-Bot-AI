@@ -1,7 +1,9 @@
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
-import newChatIcon from "../assets/newchat.png";
-import editIcon from "../assets/edit.png";
+// import newChatIcon from "../assets/newchat.png";
+// import editIcon from "../assets/edit.png";
+import { Link } from "react-router-dom";
+
 
 export default function Sidebar({ onNewChat }) {
     const navigate = useNavigate();
@@ -34,7 +36,21 @@ export default function Sidebar({ onNewChat }) {
 
 
             {/* NEW CHAT */}
-            <a
+
+            <Link to="/" style={{ textDecoration: "none" }}>
+                <Box onClick={handleNewChat} sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    background: "#dcd2ff",
+                    p: 1.5,
+                    borderRadius: 2,
+                    cursor: "pointer"
+                }}>New Chat</Box>
+            </Link>
+
+
+            {/* <a
                 href="/"
                 onClick={(e) => e.preventDefault()}
                 style={{ textDecoration: "none", color: "inherit" }}
@@ -56,11 +72,23 @@ export default function Sidebar({ onNewChat }) {
                     <Box flexGrow={1} />
                     <img src={editIcon} alt="edit" width={18} />
                 </Box>
-            </a>
+            </a> */}
 
 
             {/* PAST CONVERSATIONS */}
-            <a href="/history" style={{ textDecoration: "none", width: "100%" }}>
+            <Link to="/history" style={{ textDecoration: "none" }}>
+                <Button fullWidth sx={{
+                    mt: 3,
+                    background: "#dcd2ff",
+                    color: "#000",
+                    borderRadius: 2,
+                    textTransform: "none",
+                    fontWeight: 600
+                }}>Past Conversations</Button>
+            </Link>
+
+
+            {/* <a href="/history" style={{ textDecoration: "none", width: "100%" }}>
                 <Button
                     fullWidth
                     sx={{
@@ -74,7 +102,7 @@ export default function Sidebar({ onNewChat }) {
                 >
                     Past Conversations
                 </Button>
-            </a>
+            </a> */}
 
         </Box>
     );

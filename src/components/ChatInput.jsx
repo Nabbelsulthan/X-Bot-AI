@@ -16,6 +16,7 @@ export default function ChatInput({ onAsk, onSave }) {
     return (
         <Box
             component="form"
+            role="form" 
             onSubmit={handleSubmit}
             sx={{
                 display: "flex",
@@ -38,6 +39,7 @@ export default function ChatInput({ onAsk, onSave }) {
 
             {/* INPUT */}
             <input
+              name="chat-input"
                 placeholder="Message Bot AI..."
                 value={text}
                 onChange={(e) => setText(e.target.value)}

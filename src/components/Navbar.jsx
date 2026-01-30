@@ -27,6 +27,7 @@ export default function Navbar({ onMenuClick }) {
 
             <Typography
                 variant="h4"
+                component="h1"
                 fontWeight={700}
                 sx={{ ml: isMobile ? 1 : 0, color: "#8b7fd1" }}
             >
