@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
 import {
     Box,
     Typography,
@@ -30,6 +31,14 @@ export default function Chat() {
     const [openToast, setOpenToast] = useState(false);
 
     const navigate = useNavigate();
+
+    const bottomRef = useRef(null);
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+
 
     /* ---------------- ASK QUESTION ---------------- */
     const handleAsk = (question) => {
@@ -185,6 +194,8 @@ export default function Chat() {
                             />
 
                         ))}
+
+                        <div ref={bottomRef} />
                     </Box>
                 )}
             </Box>
