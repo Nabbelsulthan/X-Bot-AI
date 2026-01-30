@@ -29,12 +29,13 @@ export default function ChatMessage({ msg, onFeedback, onRate }) {
                 }}
             >
                 {/* NAME */}
-                <Typography fontWeight={700} mb={1}>
+                <span style={{ fontWeight: 700 }}>
                     {isAI ? "Soul AI" : "You"}
-                </Typography>
+                </span>
 
                 {/* MESSAGE */}
-                <Typography>{msg.text}</Typography>
+                <p>{msg.text}</p>
+
 
                 {/* TIME + THUMBS */}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>

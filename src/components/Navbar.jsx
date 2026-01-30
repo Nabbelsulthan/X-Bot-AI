@@ -4,10 +4,11 @@ import { useTheme, useMediaQuery } from "@mui/material";
 
 export default function Navbar({ onMenuClick }) {
   const theme = useTheme();
-  
+
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
+    <header>
     <Box
       sx={{
         height: 64,
@@ -31,5 +32,6 @@ export default function Navbar({ onMenuClick }) {
         Bot AI
       </Typography>
     </Box>
+    </header>
   );
 }
