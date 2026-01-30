@@ -225,12 +225,19 @@ export default function Chat() {
                         gap: 2
                     }}
                 >
-                    <TextField
-                        fullWidth
+                    <input
                         placeholder="Message Bot AI..."
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
+                        style={{
+                            flex: 1,
+                            padding: "12px",
+                            borderRadius: "8px",
+                            border: "1px solid #ccc",
+                            fontSize: "16px"
+                        }}
                     />
+
 
                     <Button
                         onClick={() => handleAsk(input)}
