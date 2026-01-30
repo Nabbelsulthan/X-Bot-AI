@@ -6,39 +6,39 @@ import {
   CardContent,
   TextField,
   Button,
-  Avatar,
-  Dialog,
-  DialogContent,
-  DialogActions
+  Snackbar
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
+import ChatMessage from "../components/ChatMessage";
+import FeedbackModal from "../components/FeedbackModal";
 import bot from "../assets/bot.png";
-import person from "../assets/person.png";
 import data from "../data/sampleData.json";
-import ChatInput from "../components/ChatInput";
 
-const normalize = (str) =>
-
-  str.toLowerCase().replace(/[^\w\s]/gi, "").trim();
-
-const getCurrentTime = () =>
+/* ---------------- TIME (12 HOUR FORMAT) ---------------- */
+const getTime = () =>
   new Date().toLocaleTimeString([], {
     hour: "2-digit",
-    minute: "2-digit"
+    minute: "2-digit",
+    hour12: true
   });
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
-
   const [input, setInput] = useState("");
-
   const [openFeedback, setOpenFeedback] = useState(false);
+  const [openToast, setOpenToast] = useState(false);
 
+  const navigate = useNavigate();
+
+  /* ---------------- ASK QUESTION ---------------- */
   const handleAsk = (question) => {
     if (!question.trim()) return;
 
+    const normalized = question.trim().toLowerCase();
+
     const match = data.find(
-      (d) => normalize(d.question) === normalize(question)
+      (d) => d.question.toLowerCase().trim() === normalized
     );
 
     setMessages((prev) => [
@@ -46,18 +46,59 @@ export default function Chat() {
       {
         sender: "you",
         text: question,
-        time: getCurrentTime()
+        time: getTime()
       },
       {
         sender: "ai",
-        text: match
-          ? match.response
-          : "Sorry, Did not understand your query!",
-        time: getCurrentTime()
+        text: match?.response || "Sorry, I did not understand your query!",
+        time: getTime()
       }
     ]);
 
     setInput("");
+  };
+
+  /* ---------------- SAVE CHAT ---------------- */
+const handleSaveChat = () => {
+  if (messages.length === 0) return;
+
+  const history =
+    JSON.parse(localStorage.getItem("chat_history")) || [];
+
+  const newChat = {
+    id: Date.now(),
+    createdAt: new Date().toISOString(),
+    messages
+  };
+
+  localStorage.setItem(
+    "chat_history",
+    JSON.stringify([newChat, ...history])
+  );
+
+  setMessages([]);       // reset to landing page
+  setOpenToast(true);   // ✅ SHOW TOAST
+};
+
+
+
+  /* ---------------- SAVE FEEDBACK ON LAST AI MSG ---------------- */
+  const submitFeedback = (feedbackText) => {
+    setMessages((prev) => {
+      const updated = [...prev];
+      for (let i = updated.length - 1; i >= 0; i--) {
+        if (updated[i].sender === "ai") {
+          updated[i] = {
+            ...updated[i],
+            feedback: feedbackText
+          };
+          break;
+        }
+      }
+      return updated;
+    });
+
+    setOpenFeedback(false);
   };
 
   return (
@@ -69,8 +110,16 @@ export default function Chat() {
         background: "linear-gradient(180deg,#f4f1ff,#d8ccff)"
       }}
     >
-      {/* CHAT BODY */}
-      <Box sx={{ flex: 1, overflowY: "auto", px: 4 }}>
+      {/* ================= CHAT BODY ================= */}
+      <Box
+        sx={{
+          flex: 1,
+          overflowY: "auto",
+          px: 4,
+          pt: 4,
+          pb: 2
+        }}
+      >
         {messages.length === 0 ? (
           <>
             <Typography
@@ -80,13 +129,10 @@ export default function Chat() {
               mt={6}
             >
               How Can I Help You Today?
-
             </Typography>
 
             <Box textAlign="center" my={4}>
-
               <img src={bot} alt="bot" width={70} />
-
             </Box>
 
             <Box
@@ -98,9 +144,9 @@ export default function Chat() {
                 gap: 2
               }}
             >
-              {data.slice(0, 4).map((d) => (
+              {data.slice(0, 4).map((d, i) => (
                 <Card
-                  key={d.id}
+                  key={i}
                   onClick={() => handleAsk(d.question)}
                   sx={{
                     cursor: "pointer",
@@ -108,95 +154,106 @@ export default function Chat() {
                   }}
                 >
                   <CardContent>
-
                     <Typography fontWeight={600}>
                       {d.question}
                     </Typography>
-
                     <Typography variant="body2" color="text.secondary">
                       Get immediate AI generated response
                     </Typography>
-
                   </CardContent>
-
                 </Card>
               ))}
             </Box>
           </>
         ) : (
-          <Box sx={{ maxWidth: 900, mx: "auto", mt: 4 }}>
+          <Box sx={{ maxWidth: 900, mx: "auto" }}>
             {messages.map((m, i) => (
-              <Box key={i} sx={{ display: "flex", gap: 2, mb: 3 }}>
-
-                <Avatar src={m.sender === "ai" ? bot : person} />
-
-                <Box
-                  sx={{
-                    flex: 1,
-                    background:
-                      "linear-gradient(180deg,#e6dcff,#d2c4ff)",
-                    borderRadius: 4,
-                    p: 2.5
-                  }}
-                >
-                  <Typography fontWeight={700}>
-                    {m.sender === "ai" ? (
-                      <span>Soul AI</span>
-                    ) : (
-                      "You"
-                    )}
-                  </Typography>
-
-                  <Typography component="p">{m.text}</Typography>
-
-                  <Typography variant="caption" sx={{ opacity: 0.6 }}>
-                    {m.time}
-                  </Typography>
-
-                </Box>
-              </Box>
+              <ChatMessage
+                key={i}
+                msg={m}
+                onFeedback={() => setOpenFeedback(true)}
+              />
             ))}
           </Box>
         )}
       </Box>
 
-{/* input  */}
-<Box
-  sx={{
-    px: 3,
-    py: 2,
-    background: "#f4f1ff"
-  }}
->
-  <Box sx={{ maxWidth: 900, mx: "auto" }}>
-    <ChatInput
+      {/* ================= INPUT BAR (UI UNCHANGED) ================= */}
+      <Box
+        sx={{
+          px: 4,
+          py: 2,
+          background: "#f6f3ff",
+          borderTop: "1px solid #ddd"
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: 900,
+            mx: "auto",
+            display: "flex",
+            gap: 2
+          }}
+        >
+          <TextField
+            fullWidth
+            placeholder="Message Bot AI…"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
 
-      onAsk={handleAsk}
+          <Button
+            onClick={() => handleAsk(input)}
+            sx={{
+              background: "#d6cbff",
+              color: "#000",
+              fontWeight: 600,
+              "&:hover": { background: "#c8bbff" }
+            }}
+          >
+            Ask
+          </Button>
 
-      onSave={() => setOpenFeedback(true)}
-    />
-  </Box>
-</Box>
+          <Button
+            onClick={handleSaveChat}
+            sx={{
+              background: "#e8e2ff",
+              color: "#000",
+              fontWeight: 600,
+              "&:hover": { background: "#dccfff" }
+            }}
+          >
+            Save
+          </Button>
+        </Box>
+      </Box>
 
+      {/* ================= FEEDBACK MODAL ================= */}
+      <FeedbackModal
+        open={openFeedback}
+        onClose={() => setOpenFeedback(false)}
+        onSubmit={submitFeedback}
+      />
 
-      {/* FEEDBACK MODAL */}
-      <Dialog open={openFeedback} onClose={() => setOpenFeedback(false)}>
-
-        <DialogContent>
-
-          <Typography fontWeight={600}>
-            Provide Additional Feedback
-          </Typography>
-
-          <TextField fullWidth multiline rows={4} />
-
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={() => setOpenFeedback(false)}>Submit</Button>
-        </DialogActions>
-        
-      </Dialog>
+      {/* ================= SAVE TOAST ================= */}
+      <Snackbar
+        open={openToast}
+        autoHideDuration={4000}
+        onClose={() => setOpenToast(false)}
+        message={
+          <span>
+            Chat saved.&nbsp;
+            <Button
+              size="small"
+              onClick={() => navigate("/history")}
+              sx={{ textTransform: "none", fontWeight: 600 }}
+            >
+              See past conversations
+            </Button>
+          </span>
+        }
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      />
     </Box>
   );
 }
