@@ -30,8 +30,15 @@ export default function Sidebar({ onNewChat }) {
                 p: 2
             }}
         >
+
+
+
             {/* NEW CHAT */}
-            <a href="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <a
+                href="/"
+                onClick={(e) => e.preventDefault()}
+                style={{ textDecoration: "none", color: "inherit" }}
+            >
                 <Box
                     onClick={handleNewChat}
                     sx={{

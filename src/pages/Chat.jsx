@@ -8,7 +8,7 @@ import {
     Button,
     Snackbar
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 import ChatMessage from "../components/ChatMessage";
 import FeedbackModal from "../components/FeedbackModal";
@@ -29,7 +29,7 @@ export default function Chat() {
     const [openFeedback, setOpenFeedback] = useState(false);
     const [openToast, setOpenToast] = useState(false);
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const scrollRef = useRef(null);
 
@@ -269,11 +269,13 @@ export default function Chat() {
                 message={
                     <span>
                         Chat saved.&nbsp;
-                        <Button
+                        {/* <Button
                             size="small"
                             onClick={() => navigate("/history")}
                             sx={{ textTransform: "none", fontWeight: 600 }}
-                        >
+                        > */}
+
+                            <Button component="a" href="/history">
                             See past conversations
                         </Button>
                     </span>
