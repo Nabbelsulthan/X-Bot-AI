@@ -16,6 +16,7 @@ export default function ChatInput({ onAsk, onSave }) {
     return (
         <Box
             component="form"
+            as="form"
             role="form" 
             onSubmit={handleSubmit}
             sx={{
