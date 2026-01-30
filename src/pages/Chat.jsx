@@ -14,6 +14,8 @@ import ChatMessage from "../components/ChatMessage";
 import FeedbackModal from "../components/FeedbackModal";
 import bot from "../assets/bot.png";
 import data from "../data/sampleData.json";
+import ChatInput from "../components/ChatInput";
+
 
 
 const getTime = () =>
@@ -25,7 +27,7 @@ const getTime = () =>
 
 export default function Chat() {
     const [messages, setMessages] = useState([]);
-    const [input, setInput] = useState("");
+    // const [input, setInput] = useState("");
     const [openFeedback, setOpenFeedback] = useState(false);
     const [openToast, setOpenToast] = useState(false);
 
@@ -70,7 +72,8 @@ export default function Chat() {
             }
         ]);
 
-        setInput("");
+        // setInput("");
+        
     };
 
     /*  SAVE CHAT  */
@@ -208,50 +211,22 @@ export default function Chat() {
             </Box>
 
             {/* INPUT */}
-            <Box
-                sx={{
-                    px: 4,
-                    py: 2,
-                    background: "#f6f3ff",
-                    borderTop: "1px solid #ddd"
-                }}
-            >
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleAsk(input);
-                    }}
-                    style={{
-                        maxWidth: 900,
-                        margin: "0 auto",
-                        display: "flex",
-                        gap: "16px"
-                    }}
-                >
-                    <input
-                        placeholder="Message Bot AI..."
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        style={{
-                            flex: 1,
-                            padding: "12px",
-                            borderRadius: "8px",
-                            border: "1px solid #ccc",
-                            fontSize: "16px"
-                        }}
-                    />
-
-                    {/* ASK */}
-                    <button type="submit">
-                        Ask
-                    </button>
-
-                    {/* SAVE */}
-                    <button type="button" onClick={handleSaveChat}>
-                        Save
-                    </button>
-                </form>
-            </Box>
+         
+<Box
+  sx={{
+    px: 4,
+    py: 2,
+    background: "#f6f3ff",
+    borderTop: "1px solid #ddd"
+  }}
+>
+  <Box sx={{ maxWidth: 900, mx: "auto" }}>
+    <ChatInput
+      onAsk={handleAsk}
+      onSave={handleSaveChat}
+    />
+  </Box>
+</Box>
 
 
             {/*  FEEDBACK MODAL  */}
