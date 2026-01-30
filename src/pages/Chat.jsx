@@ -16,7 +16,7 @@ import FeedbackModal from "../components/FeedbackModal";
 import bot from "../assets/bot.png";
 import data from "../data/sampleData.json";
 
-/* ---------------- TIME (12 HOUR FORMAT) ---------------- */
+
 const getTime = () =>
     new Date().toLocaleTimeString([], {
         hour: "2-digit",
@@ -40,7 +40,7 @@ export default function Chat() {
 
 
 
-    /* ---------------- ASK QUESTION ---------------- */
+    /*  ASK QUESTION  */
     const handleAsk = (question) => {
         if (!question.trim()) return;
 
@@ -67,7 +67,7 @@ export default function Chat() {
         setInput("");
     };
 
-    /* ---------------- SAVE CHAT ---------------- */
+    /*  SAVE CHAT  */
     const handleSaveChat = () => {
         if (messages.length === 0) return;
 
@@ -86,12 +86,12 @@ export default function Chat() {
         );
 
         setMessages([]);       // reset to landing page
-        setOpenToast(true);   // ✅ SHOW TOAST
+        setOpenToast(true);   //  SHOW TOAST
     };
 
 
 
-    /* ---------------- SAVE FEEDBACK ON LAST AI MSG ---------------- */
+    /*  SAVE FEEDBACK   */
     const submitFeedback = (feedbackText) => {
         setMessages((prev) => {
             const updated = [...prev];
@@ -119,7 +119,7 @@ export default function Chat() {
                 background: "linear-gradient(180deg,#f4f1ff,#d8ccff)"
             }}
         >
-            {/* ================= CHAT BODY ================= */}
+            {/*  CHAT BODY  */}
             <Box
                 sx={{
                     flex: 1,
@@ -200,7 +200,7 @@ export default function Chat() {
                 )}
             </Box>
 
-            {/* ================= INPUT BAR (UI UNCHANGED) ================= */}
+            {/*  INPUT  */}
             <Box
                 sx={{
                     px: 4,
@@ -250,14 +250,14 @@ export default function Chat() {
                 </Box>
             </Box>
 
-            {/* ================= FEEDBACK MODAL ================= */}
+            {/*  FEEDBACK MODAL  */}
             <FeedbackModal
                 open={openFeedback}
                 onClose={() => setOpenFeedback(false)}
                 onSubmit={submitFeedback}
             />
 
-            {/* ================= SAVE TOAST ================= */}
+            {/*  SAVE TOAST  */}
             <Snackbar
                 open={openToast}
                 autoHideDuration={4000}

@@ -52,7 +52,7 @@ export default function ChatMessage({ msg, onFeedback, onRate }) {
                                 transition: "0.2s"
                             }}
                         >
-                            {/* 👍 THUMBS UP → SHOW RATING */}
+                            {/*  THUMBS UP */}
                             <IconButton
                                 size="small"
                                 onClick={() => setShowRating(true)}
@@ -60,7 +60,7 @@ export default function ChatMessage({ msg, onFeedback, onRate }) {
                                 <ThumbUpOffAltIcon fontSize="small" />
                             </IconButton>
 
-                            {/* 👎 THUMBS DOWN → FEEDBACK MODAL */}
+                            {/*  THUMBS DOWN */}
                             <IconButton size="small" onClick={onFeedback}>
                                 <ThumbDownOffAltIcon fontSize="small" />
                             </IconButton>
@@ -68,7 +68,7 @@ export default function ChatMessage({ msg, onFeedback, onRate }) {
                     )}
                 </Box>
 
-                {/* ⭐ RATE THIS RESPONSE — ONLY AFTER 👍 */}
+                {/*  RATE  */}
                 {isAI && showRating && (
                     <Box sx={{ mt: 1 }}>
                         <Typography

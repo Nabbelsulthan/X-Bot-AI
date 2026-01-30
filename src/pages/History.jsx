@@ -51,14 +51,13 @@ export default function History() {
 }, []);
 
 
-  /* ---------- GROUP + FILTER (CHAT LEVEL) ---------- */
+  /*   +FILTER   */
   const grouped = useMemo(() => {
     const groups = {};
 
     history.forEach((chat) => {
       if (!chat?.createdAt || !Array.isArray(chat.messages)) return;
 
-      // ✅ Check if chat matches rating filter
       const matchesRating =
         filter === "all" ||
         chat.messages.some(
@@ -77,7 +76,7 @@ export default function History() {
       if (!label) return;
 
       if (!groups[label]) groups[label] = [];
-      groups[label].push(...chat.messages); // ✅ PUSH ALL MESSAGES
+      groups[label].push(...chat.messages); 
     });
 
     return groups;
