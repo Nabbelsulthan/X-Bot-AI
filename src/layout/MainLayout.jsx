@@ -1,39 +1,53 @@
+import { Box, Drawer, useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
-import { Box, useMediaQuery } from "@mui/material";
-import Navbar from "../components/Navbar/Navbar";
-import Sidebar from "../components/Sidebar/Sidebar";
-
-const drawerWidth = 260;
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
 export default function MainLayout({ children }) {
+  const theme = useTheme();
 
-  const [open, setOpen] = useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const isDesktop = useMediaQuery("(min-width:768px)");
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const [resetKey, setResetKey] = useState(0);
+
+  const handleNewChat = () => {
+    setResetKey((k) => k + 1);
+    
+    setMobileOpen(false); // close drawer on mobile
+  };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Navbar
-        onMenuClick={() => setOpen(true)}
-        isDesktop={isDesktop}
-      />
+    <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+      {/* DESKTOP SIDEBAR */}
+      {!isMobile && <Sidebar onNewChat={handleNewChat} />}
 
-      <Sidebar
-        open={open}
-        onClose={() => setOpen(false)}
-        isDesktop={isDesktop}
-      />
+      {/* MOBILE SIDEBAR (DRAWER) */}
+      {isMobile && (
+        <Drawer
+          open={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          ModalProps={{ keepMounted: true }}
+        >
+          <Sidebar onNewChat={handleNewChat} />
+        </Drawer>
+      )}
 
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          mt: 8,
-          ml: isDesktop ? `${drawerWidth}px` : 0
-        }}
-      >
-        {children}
+      {/* MAIN CONTENT */}
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <Navbar onMenuClick={() => setMobileOpen(true)} />
+
+        <Box
+          key={resetKey}
+          sx={{
+            flex: 1,
+            overflow: "hidden"
+          }}
+        >
+          {children}
+        </Box>
       </Box>
     </Box>
   );

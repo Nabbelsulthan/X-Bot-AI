@@ -1,14 +1,17 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "./layout/MainLayout";
+import Chat from "./pages/Chat";
+import History from "./pages/History";
 
-import MainLayout from './layout/MainLayout';
-import Home from './pages/Home';
-import './App.css';
-
-function App() {
+export default function App() {
   return (
-   <MainLayout>
-     <Home/>
-   </MainLayout>
+    <BrowserRouter>
+      <MainLayout>
+        <Routes>
+          <Route path="/" element={<Chat />} />
+          <Route path="/history" element={<History />} />
+        </Routes>
+      </MainLayout>
+    </BrowserRouter>
   );
 }
-
-export default App;
