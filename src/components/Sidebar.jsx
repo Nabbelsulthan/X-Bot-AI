@@ -17,9 +17,9 @@ export default function Sidebar({ onNewChat }) {
         }
     };
 
-    const handleHistory = () => {
-        navigate("/history");
-    };
+    // const handleHistory = () => {
+    //     navigate("/history");
+    // };
 
     return (
         <Box
