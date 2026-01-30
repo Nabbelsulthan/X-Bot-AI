@@ -32,11 +32,18 @@ export default function Chat() {
 
     const navigate = useNavigate();
 
-    const bottomRef = useRef(null);
+    const scrollRef = useRef(null);
+
 
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (!scrollRef.current) return;
+
+        scrollRef.current.scrollTo({
+            top: scrollRef.current.scrollHeight,
+            behavior: "smooth"
+        });
     }, [messages]);
+
 
 
 
@@ -121,6 +128,7 @@ export default function Chat() {
         >
             {/*  CHAT BODY  */}
             <Box
+                ref={scrollRef}
                 sx={{
                     flex: 1,
                     overflowY: "auto",
@@ -175,7 +183,7 @@ export default function Chat() {
                         </Box>
                     </>
                 ) : (
-                    <Box sx={{ maxWidth: 900, mx: "auto" }}>
+                    <Box sx={{ maxWidth: 900, mx: "auto", pt: 6 }}>
                         {messages.map((m, i) => (
                             <ChatMessage
                                 key={i}
@@ -195,7 +203,7 @@ export default function Chat() {
 
                         ))}
 
-                        <div ref={bottomRef} />
+                        {/* <div ref={bottomRef} /> */}
                     </Box>
                 )}
             </Box>
@@ -232,6 +240,7 @@ export default function Chat() {
                             fontWeight: 600,
                             "&:hover": { background: "#c8bbff" }
                         }}
+
                     >
                         Ask
                     </Button>
