@@ -42,8 +42,14 @@ const formatDate = (iso) => {
 export default function History() {
   const [filter, setFilter] = useState("all");
 
-  const history =
-    JSON.parse(localStorage.getItem("chat_history")) || [];
+ const history = useMemo(() => {
+  try {
+    return JSON.parse(localStorage.getItem("chat_history")) || [];
+  } catch {
+    return [];
+  }
+}, []);
+
 
   /* ---------- GROUP + FILTER (CHAT LEVEL) ---------- */
   const grouped = useMemo(() => {
