@@ -7,13 +7,17 @@ import {
   Select,
   MenuItem
 } from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
 
 import bot from "../assets/bot.png";
 import person from "../assets/person.png";
 
 /* ---------- DATE HELPERS ---------- */
 const isToday = (iso) => {
+  if (!iso) return false;
   const d = new Date(iso);
+  if (isNaN(d)) return false;
+
   const today = new Date();
   return (
     d.getDate() === today.getDate() &&
@@ -22,13 +26,18 @@ const isToday = (iso) => {
   );
 };
 
-const formatDate = (iso) =>
-  new Date(iso).toLocaleDateString(undefined, {
+const formatDate = (iso) => {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d)) return null;
+
+  return d.toLocaleDateString(undefined, {
     weekday: "long",
     year: "numeric",
     month: "short",
     day: "numeric"
   });
+};
 
 export default function History() {
   const [filter, setFilter] = useState("all");
@@ -36,32 +45,41 @@ export default function History() {
   const history =
     JSON.parse(localStorage.getItem("chat_history")) || [];
 
-  /* ---------- GROUP BY DATE ---------- */
-  const groupedChats = useMemo(() => {
+  /* ---------- GROUP + FILTER (CHAT LEVEL) ---------- */
+  const grouped = useMemo(() => {
     const groups = {};
 
     history.forEach((chat) => {
-      const key = isToday(chat.createdAt)
-        ? "today"
+      if (!chat?.createdAt || !Array.isArray(chat.messages)) return;
+
+      // ✅ Check if chat matches rating filter
+      const matchesRating =
+        filter === "all" ||
+        chat.messages.some(
+          (m) =>
+            m.sender === "ai" &&
+            typeof m.rating === "number" &&
+            m.rating === Number(filter)
+        );
+
+      if (!matchesRating) return;
+
+      const label = isToday(chat.createdAt)
+        ? "Today's chats"
         : formatDate(chat.createdAt);
 
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(chat);
+      if (!label) return;
+
+      if (!groups[label]) groups[label] = [];
+      groups[label].push(...chat.messages); // ✅ PUSH ALL MESSAGES
     });
 
     return groups;
-  }, [history]);
+  }, [history, filter]);
 
-  /* ---------- FILTER LOGIC ---------- */
-  const filterMessages = (messages) => {
-    if (filter === "all") return messages;
-
-    return messages.filter(
-      (m) =>
-        m.sender === "ai" &&
-        m.rating === Number(filter)
-    );
-  };
+  const hasResults = Object.values(grouped).some(
+    (msgs) => msgs.length > 0
+  );
 
   return (
     <Box
@@ -79,7 +97,7 @@ export default function History() {
       </Typography>
 
       {/* FILTER */}
-      <Box sx={{ mb: 3, maxWidth: 200 }}>
+      <Box sx={{ mb: 3, maxWidth: 220 }}>
         <Typography variant="caption" fontWeight={600}>
           Filter by rating
         </Typography>
@@ -101,22 +119,20 @@ export default function History() {
 
       {/* SCROLLABLE CONTENT */}
       <Box sx={{ flex: 1, overflowY: "auto", pr: 1 }}>
-        {Object.keys(groupedChats).length === 0 && (
-          <Typography>No saved conversations</Typography>
+        {!hasResults && history.length > 0 && (
+          <Typography color="text.secondary">
+            No conversations found for the selected rating.
+          </Typography>
         )}
 
-        {Object.entries(groupedChats).map(([date, chats]) => (
-          <Box key={date} mb={4}>
-            {/* DATE HEADER */}
-            <Typography variant="subtitle1" fontWeight={700} mb={2}>
-              {date === "today" ? "Today's chats" : date}
-            </Typography>
+        {hasResults &&
+          Object.entries(grouped).map(([date, messages]) => (
+            <Box key={date} mb={4}>
+              <Typography fontWeight={700} mb={2}>
+                {date}
+              </Typography>
 
-            {chats.map((chat) => {
-              const filtered = filterMessages(chat.messages);
-              if (filtered.length === 0) return null;
-
-              return filtered.map((m, i) => (
+              {messages.map((m, i) => (
                 <Card
                   key={i}
                   sx={{
@@ -146,12 +162,35 @@ export default function History() {
                     >
                       {m.time}
                     </Typography>
+
+                    {/* RATING (AI ONLY) */}
+                    {m.sender === "ai" &&
+                      typeof m.rating === "number" && (
+                        <Box sx={{ display: "flex", mt: 0.5 }}>
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <StarIcon
+                              key={s}
+                              fontSize="small"
+                              sx={{
+                                color:
+                                  s <= m.rating ? "#f5b301" : "#ccc"
+                              }}
+                            />
+                          ))}
+                        </Box>
+                      )}
+
+                    {/* FEEDBACK */}
+                    {m.feedback && (
+                      <Typography variant="caption">
+                        <strong>Feedback:</strong> {m.feedback}
+                      </Typography>
+                    )}
                   </Box>
                 </Card>
-              ));
-            })}
-          </Box>
-        ))}
+              ))}
+            </Box>
+          ))}
       </Box>
     </Box>
   );
