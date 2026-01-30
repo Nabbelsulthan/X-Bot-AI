@@ -7,7 +7,7 @@ export default function ChatInput({ onAsk, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!text.trim()) return;
     onAsk(text);
     setText("");
@@ -39,7 +39,7 @@ export default function ChatInput({ onAsk, onSave }) {
       {/* INPUT */}
       <TextField
         fullWidth
-        placeholder="Message Bot AI…"
+        placeholder="Message Bot AI..."
         value={text}
         onChange={(e) => setText(e.target.value)}
         variant="outlined"
