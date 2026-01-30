@@ -225,7 +225,7 @@ export default function Chat() {
                     }}
                 >
                     <input
-                        placeholder="Message Bot AI..."
+                        placeholder="Message Bot AI…"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         style={{
