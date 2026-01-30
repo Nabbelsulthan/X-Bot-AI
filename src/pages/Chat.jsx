@@ -221,15 +221,13 @@ export default function Chat() {
   }}
 >
   <Box sx={{ maxWidth: 900, mx: "auto" }}>
-    <form onSubmit={(e) => e.preventDefault()}>
     <ChatInput
       onAsk={handleAsk}
       onSave={handleSaveChat}
     />
-
-</form>
   </Box>
 </Box>
+
 
 
             {/*  FEEDBACK MODAL  */}
