@@ -59,7 +59,7 @@ export default function Chat() {
             },
             {
                 sender: "ai",
-                text: match?.response || "Sorry, I did not understand your query!",
+                text: match?.response || "Sorry, Did not understand your query!",
                 time: getTime()
             }
         ]);
